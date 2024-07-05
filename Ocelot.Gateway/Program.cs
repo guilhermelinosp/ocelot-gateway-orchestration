@@ -4,13 +4,11 @@ using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 using Serilog;
 using Serilog.Events;
-using Serilog.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 var host = builder.Host;
 var services = builder.Services;
-var logging = builder.Logging;
 
 // SERVICES
 services.AddHealthChecks();
@@ -18,7 +16,7 @@ services.AddControllers();
 services.AddOcelot();
 
 // CONFIGURATION
-configuration.AddJsonFile("ocelot.json");
+configuration.AddJsonFile("gateway.json");
 
 // HOST
 host.UseSerilog((host, services, logging) =>
@@ -27,8 +25,9 @@ host.UseSerilog((host, services, logging) =>
 		.MinimumLevel.Information()
 		.MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
 		.MinimumLevel.Override("System", LogEventLevel.Warning)
+		.MinimumLevel.Override("Ocelot", LogEventLevel.Information)
 		.MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Information)
-		.MinimumLevel.Override("Serilog.AspNetCore.RequestLoggingMiddleware", LogEventLevel.Information)
+
 		.WriteTo.Async(write =>
 		{
 			write.Console(
@@ -38,27 +37,15 @@ host.UseSerilog((host, services, logging) =>
 				outputTemplate:
 				"[{Timestamp:yyyy-MM-dd HH:mm:ss.fff} {Level:u3}] {ClientIp}  {ThreadId} {Message:lj} <p:{SourceContext}>{NewLine}{Exception}");
 		})
+		
 		.ReadFrom.Configuration(host.Configuration)
 		.ReadFrom.Services(services)
-		.Enrich.WithThreadId()
-		.Enrich.WithProcessId()
-		.Enrich.WithClientIp()
-		.Enrich.WithExceptionDetails()
+		
 		.Enrich.FromLogContext();
 });
-
-// LOGGING
-logging.ClearProviders();
-logging.AddSerilog();
-
 // MIDDLEWARE
 var app = builder.Build();
-app.UseSerilogRequestLogging(options =>
-{
-	options.GetLevel = (httpContext, elapsed, ex) => ex != null ?
-		LogEventLevel.Error :
-		LogEventLevel.Information;
-});
+
 app.MapHealthChecks("/health", new HealthCheckOptions
 {
 	Predicate = _ => true,
@@ -72,7 +59,7 @@ app.UseEndpoints(endpoints =>
 
 	endpoints.MapGet("/", async context =>
 	{
-		await context.Response.WriteAsync("Ocelot Gateway is running!"); // Sample endpoint
+		await context.Response.WriteAsync("Gateway is running!"); // Sample endpoint
 	});
 });
 

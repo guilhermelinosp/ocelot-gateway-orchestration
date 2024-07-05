@@ -6,6 +6,7 @@
         <InvariantGlobalization>false</InvariantGlobalization>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
         <UserSecretsId>1a675869-64b9-4fd7-bcf4-761ebd0c4a3f</UserSecretsId>
+        <RootNamespace>Ocelot.Gateway</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -27,9 +28,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="..\..\.dockerignore">
-            <Link>.dockerignore</Link>
-        </Content>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
     </ItemGroup>
 
 </Project>
