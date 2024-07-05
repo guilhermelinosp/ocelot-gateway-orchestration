@@ -7,7 +7,7 @@
       "launchBrowser": false,
       "hotReloadEnabled": true,
       "launchUrl": "healthcheck",
-      "applicationUrl": "http://localhost:5000",
+      "applicationUrl": "http://localhost:19000",
       "ancmHostingModel": "InProcess",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
@@ -19,7 +19,7 @@
       "launchBrowser": false,
       "hotReloadEnabled": true,
       "launchUrl": "healthcheck",
-      "applicationUrl": "https://localhost:5001",
+      "applicationUrl": "https://localhost:19001",
       "ancmHostingModel": "InProcess",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Production"
