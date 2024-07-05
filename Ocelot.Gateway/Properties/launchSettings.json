@@ -4,25 +4,27 @@
     "Development": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": false,
-      "hotReloadEnabled": true,
-      "launchUrl": "healthcheck",
-      "applicationUrl": "http://localhost:19000",
-      "ancmHostingModel": "InProcess",
+      "launchBrowser": true,
+      "applicationUrl": "http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
     "Production": {
       "commandName": "Project",
-      "dotnetRunMessages": true,
+      "dotnetRunMessages": false,
       "launchBrowser": false,
-      "hotReloadEnabled": true,
-      "launchUrl": "healthcheck",
-      "applicationUrl": "https://localhost:19001",
-      "ancmHostingModel": "InProcess",
+      "applicationUrl": "https://localhost:5001",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Production"
+      }
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost;https://localhost",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Docker"
       }
     }
   }
