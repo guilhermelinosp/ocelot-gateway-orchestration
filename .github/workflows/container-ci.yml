@@ -34,5 +34,5 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.actor }}/ocelot-gateway:1.0.0
-            docker.io/${{ secrets.DOCKER_USERNAME }}/ocelot-gateway:1.0.0
+            ghcr.io/${{ github.actor }}/ocelot-gateway:v1.0.0
+            docker.io/${{ secrets.DOCKER_USERNAME }}/ocelot-gateway:v1.0.0
