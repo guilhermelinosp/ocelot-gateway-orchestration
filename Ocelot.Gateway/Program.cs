@@ -2,6 +2,7 @@ using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
+using Ocelot.Provider.Polly;
 using Serilog;
 using Serilog.Events;
 
@@ -12,8 +13,10 @@ var services = builder.Services;
 
 // SERVICES
 services.AddHealthChecks();
-services.AddControllers();
-services.AddOcelot();
+
+services
+	.AddOcelot()
+	.AddPolly();
 
 // CONFIGURATION
 configuration.AddJsonFile("gateway.json");
@@ -22,11 +25,9 @@ configuration.AddJsonFile("gateway.json");
 host.UseSerilog((host, services, logging) =>
 {
 	logging
-		.MinimumLevel.Information()
-		.MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-		.MinimumLevel.Override("System", LogEventLevel.Warning)
-		.MinimumLevel.Override("Ocelot", LogEventLevel.Information)
+		.MinimumLevel.Warning()
 		.MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Information)
+		.MinimumLevel.Override("Serilog.AspNetCore.RequestLoggingMiddleware", LogEventLevel.Information)
 
 		.WriteTo.Async(write =>
 		{
@@ -37,14 +38,14 @@ host.UseSerilog((host, services, logging) =>
 				outputTemplate:
 				"[{Timestamp:yyyy-MM-dd HH:mm:ss.fff} {Level:u3}] {ClientIp}  {ThreadId} {Message:lj} <p:{SourceContext}>{NewLine}{Exception}");
 		})
-		
 		.ReadFrom.Configuration(host.Configuration)
 		.ReadFrom.Services(services)
-		
 		.Enrich.FromLogContext();
 });
 // MIDDLEWARE
 var app = builder.Build();
+
+app.UseSerilogRequestLogging();
 
 app.MapHealthChecks("/health", new HealthCheckOptions
 {
@@ -53,6 +54,7 @@ app.MapHealthChecks("/health", new HealthCheckOptions
 });
 // Map controllers
 app.UseRouting();
+
 app.UseEndpoints(endpoints =>
 {
 	endpoints.MapControllers(); // Map controllers
@@ -62,6 +64,7 @@ app.UseEndpoints(endpoints =>
 		await context.Response.WriteAsync("Gateway is running!"); // Sample endpoint
 	});
 });
+
 
 // Use Ocelot as middleware
 await app.UseOcelot();
